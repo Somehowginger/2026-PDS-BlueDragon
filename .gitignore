@@ -1,2 +1,4 @@
 data/imgs
 data/masks
+output.csv
+src/_pycache_
