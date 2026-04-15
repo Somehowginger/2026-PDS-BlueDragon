@@ -2,3 +2,4 @@ data/imgs
 data/masks
 output.csv
 src/_pycache_
+src/feature_C(test).ipynb
