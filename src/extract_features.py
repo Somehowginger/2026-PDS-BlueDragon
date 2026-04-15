@@ -4,6 +4,8 @@ from skimage import io
 import feature_A
 import feature_B
 import feature_C
+from skimage.transform import resize
+
 
 def process_csv(input_file, output_file):
     df = pd.read_csv(input_file)
@@ -27,6 +29,8 @@ def process_csv(input_file, output_file):
 
         mask = io.imread(mask_path)
         img = io.imread(image_path)
+        
+        mask = resize(mask, img.shape[:2], order=0, preserve_range=True).astype(bool)
 
         asymmetry = feature_A.get_asymmetry(mask)
         compactness = feature_B.get_compactness(mask)
