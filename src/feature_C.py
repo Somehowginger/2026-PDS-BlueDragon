@@ -16,10 +16,6 @@ def apply_mask(image, mask):
 
 
 def get_hsv_mean(image, mask=None):
-    """Return mean H, S, V values for the masked image.
-
-    If mask is provided, only masked pixels contribute to the mean.
-    """
     hsv = convert_to_HSV(image)
 
     if mask is None:
@@ -30,8 +26,8 @@ def get_hsv_mean(image, mask=None):
 
     if len(mask.shape) == 3:
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-    _, mask_bin = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
-    mask_bool = mask_bin.astype(bool)
+    
+    mask_bool = mask.astype(bool)  # просто конвертируем напрямую
 
     h_mean = float(np.mean(hsv[:, :, 0][mask_bool]))
     s_mean = float(np.mean(hsv[:, :, 1][mask_bool]))
