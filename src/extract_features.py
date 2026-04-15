@@ -3,6 +3,7 @@ from pathlib import Path
 from skimage import io
 import feature_A
 import feature_B
+import feature_C
 
 def process_csv(input_file, output_file):
     df = pd.read_csv(input_file)
@@ -17,17 +18,23 @@ def process_csv(input_file, output_file):
         mask_name = img_name[:-4] + "_mask" + img_name[-4:]
         mask_path = masks_path / mask_name
 
+        image_path = masks_path / img_name
+
         if not mask_path.exists():
             print(f"Missing image: {img_name}")
             return pd.Series([id_value, None, None, None])
 
         mask = io.imread(mask_path)
-        compactness = feature_B.get_compactness(mask)
+        img = io.imread(image_path)
 
-        return pd.Series([id_value, None, compactness, None])
+        asymmetry = feature_A.get_asymmetry(mask)
+        compactness = feature_B.get_compactness(mask)
+        hue, saturation, brightness = feature_C.convert_to_HSV(img,mask)
+
+        return pd.Series([id_value, asymmetry, compactness, hue, saturation, brightness])
 
     result = df.apply(process_row, axis=1)
-    result.columns = ['ID', 'feature_A', 'feature_B', 'feature_C']
+    result.columns = ['ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness']
     result.to_csv(output_file, index=False)
 
 process_csv(Path(__file__).resolve().parent.parent / "data" / "features.csv", 'output.csv')
