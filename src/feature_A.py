@@ -1,23 +1,14 @@
 import numpy as np
+from skimage.transform import rotate
+from skimage.util import crop
 
-def get_assymetry(mask):
-    """
-    Get the assymetry of the image
-    :param imgs: list of images
-    :return: list of assymetry values
-    """
-    h, w = mask.shape
-    
-    left = mask[:, :w//2]
-    right = np.fliplr(mask[:, w//2:])
-    
-    # resize if uneven
-    min_w = min(left.shape[1], right.shape[1])
-    left = left[:, :min_w]
-    right = right[:, :min_w]
-    
-    diff = np.abs(left - right)
-    
-    return diff.sum() / mask.sum()
+def get_asymmetry(mask):
+    scores = []
 
+    for _ in range(6):
+        segment = crop(mask)
+        (np.sum(segment))
+        scores.append(np.sum(np.logical_xor(segment, np.flip(segment))) / (np.sum(segment)))
+        mask = rotate(mask, 30)
 
+    return sum(scores) / len(scores)
