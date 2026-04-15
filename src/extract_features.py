@@ -29,7 +29,7 @@ def process_csv(input_file, output_file):
 
         asymmetry = feature_A.get_asymmetry(mask)
         compactness = feature_B.get_compactness(mask)
-        hue, saturation, brightness = feature_C.convert_to_HSV(img,mask)
+        hue, saturation, brightness = feature_C.get_hsv_mean(img,mask)
 
         return pd.Series([id_value, asymmetry, compactness, hue, saturation, brightness])
 
