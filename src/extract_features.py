@@ -15,10 +15,11 @@ def process_csv(input_file, output_file):
         id_value = f"{parts[0]}_{parts[1]}"
 
         masks_path = Path(__file__).resolve().parent.parent / "data" / "masks"
+        img_path = Path(__file__).resolve().parent.parent / "data" / "imgs"
         mask_name = img_name[:-4] + "_mask" + img_name[-4:]
         mask_path = masks_path / mask_name
 
-        image_path = masks_path / img_name
+        image_path = img_path / img_name
 
         if not mask_path.exists():
             print(f"Missing image: {img_name}")
