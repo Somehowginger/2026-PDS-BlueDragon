@@ -1,3 +1,9 @@
 data/imgs
 data/masks
+<<<<<<< HEAD
 data/features.csv
+=======
+output.csv
+src/_pycache_
+src/feature_C(test).ipynb
+>>>>>>> fea8c7573c69ed8245a27fa16f655fa4bc4a726a
