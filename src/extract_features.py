@@ -37,15 +37,18 @@ def process_csv(input_file, output_file):
             compactness = feature_B.get_compactness(mask)
             hue, saturation, brightness = feature_C.get_hsv_mean(img,mask)
 
-            return pd.Series([id_value, asymmetry, compactness, hue, saturation, brightness])
+            diagnosis = row['diagnostic'].strip().upper()
+
+            cancer_labels = ['BCC', 'SCC', 'MEL']
+            cancer_flag = 1 if diagnosis in cancer_labels else 0
+
+            return pd.Series([id_value, asymmetry, compactness, hue, saturation, brightness, cancer_flag])
 
         except Exception as e:
             print(f"Skipping {row['img_id']} due to error: {e}")
             return None
 
     result = df.apply(process_row, axis=1)
-    #result = result.dropna()
-    result.columns = ['ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness']
+    result = result.dropna()
+    result.columns = ['ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'Cancer']
     result.to_csv(output_file, index=False)
-
-process_csv(Path(__file__).resolve().parent.parent / "data" / "features.csv", 'output.csv')
