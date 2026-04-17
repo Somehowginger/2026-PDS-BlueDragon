@@ -23,4 +23,4 @@ def get_asymmetry(mask):
     if not scores:
         return None
 
-    return sum(scores) / len(scores)
+    return round(sum(scores) / len(scores),3)

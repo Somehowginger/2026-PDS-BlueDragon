@@ -32,4 +32,4 @@ def get_hsv_mean(image, mask=None):
     h_mean = float(np.mean(hsv[:, :, 0][mask_bool]))
     s_mean = float(np.mean(hsv[:, :, 1][mask_bool]))
     v_mean = float(np.mean(hsv[:, :, 2][mask_bool]))
-    return h_mean, s_mean, v_mean
+    return round(h_mean,3), round(s_mean,3), round(v_mean,3)
