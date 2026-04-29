@@ -5,6 +5,7 @@ import feature_A
 import feature_B
 import feature_C
 from skimage.transform import resize
+from sklearn.preprocessing import StandardScaler
 
 
 def process_csv(input_file, output_file):
@@ -40,7 +41,7 @@ def process_csv(input_file, output_file):
             diagnosis = row['diagnostic'].strip().upper()
 
             cancer_labels = ['BCC', 'SCC', 'MEL']
-            cancer_flag = 1 if diagnosis in cancer_labels else 0
+            cancer_flag = "Cancerous" if diagnosis in cancer_labels else "Non-Cancerous"
 
             return pd.Series([id_value, asymmetry, compactness, hue, saturation, brightness, cancer_flag])
 
@@ -51,4 +52,23 @@ def process_csv(input_file, output_file):
     result = df.apply(process_row, axis=1)
     result = result.dropna()
     result.columns = ['ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'Cancer']
+
+
+    feature_cols = [
+        'A_asymmetry',
+        'B_compactness',
+        'C_hue',
+        'C_saturation',
+        'C_brightness'
+    ]
+
+    scaler = StandardScaler()
+    result[feature_cols] = scaler.fit_transform(result[feature_cols])
+
     result.to_csv(output_file, index=False)
+
+
+input_csv = Path(__file__).resolve().parent.parent / "data" / "metadata.csv"
+output_csv = input_csv.parent / "features.csv"
+
+process_csv(input_csv, output_csv)
