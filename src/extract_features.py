@@ -43,7 +43,7 @@ def process_csv(input_file, output_file):
             cancer_labels = ['BCC', 'SCC', 'MEL']
             cancer_flag = "Cancerous" if diagnosis in cancer_labels else "Non-Cancerous"
 
-            return pd.Series([id_value, img_name, asymmetry, compactness, hue, saturation, brightness, cancer_flag])
+            return pd.Series([id_value, img_name, asymmetry, compactness, hue, saturation, brightness, diagnosis, cancer_flag])
 
         except Exception as e:
             print(f"Skipping {row['img_id']} due to error: {e}")
@@ -51,7 +51,7 @@ def process_csv(input_file, output_file):
 
     result = df.apply(process_row, axis=1)
     result = result.dropna()
-    result.columns = ['ID', 'Image_ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'Cancer']
+    result.columns = ['ID', 'Image_ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'Diagnosis', 'Cancer']
 
 
     feature_cols = [

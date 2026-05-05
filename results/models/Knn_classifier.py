@@ -88,3 +88,4 @@ class KNNSkinCancerClassifier:
         })
         df.to_csv(output_path, index=False)
         print(f"Predictions saved to {output_path}")
+        
