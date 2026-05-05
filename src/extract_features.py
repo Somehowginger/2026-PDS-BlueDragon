@@ -8,8 +8,10 @@ from skimage.transform import resize
 from sklearn.preprocessing import StandardScaler
 
 
-def process_csv(input_file, output_file):
-    df = pd.read_csv(input_file)
+def process_csv(metadata_file, annotations_file, output_file):
+    metadata_df = pd.read_csv(metadata_file)
+    annotations_df = pd.read_csv(annotations_file)
+    df = metadata_df.merge(annotations_df, on='img_id', how='inner')
 
     def process_row(row):
         try:
@@ -41,9 +43,11 @@ def process_csv(input_file, output_file):
             diagnosis = row['diagnostic'].strip().upper()
 
             cancer_labels = ['BCC', 'SCC', 'MEL']
-            cancer_flag = "Cancerous" if diagnosis in cancer_labels else "Non-Cancerous"
+            cancer_flag = "Cancerous" if diagnosis in cancer_labels else "Benign"
 
-            return pd.Series([id_value, img_name, asymmetry, compactness, hue, saturation, brightness, diagnosis, cancer_flag])
+            hair_mean = pd.Series([row['hair_1'], row['hair_2'], row['hair_3'], row['hair_4'], row['hair_5']]).mean()
+
+            return pd.Series([id_value, img_name, asymmetry, compactness, hue, saturation, brightness, hair_mean, diagnosis, cancer_flag])
 
         except Exception as e:
             print(f"Skipping {row['img_id']} due to error: {e}")
@@ -51,7 +55,7 @@ def process_csv(input_file, output_file):
 
     result = df.apply(process_row, axis=1)
     result = result.dropna()
-    result.columns = ['ID', 'Image_ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'Diagnosis', 'Cancer']
+    result.columns = ['ID', 'Image_ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'Hair_mean', 'Diagnosis', 'Cancer']
 
 
     feature_cols = [
@@ -59,7 +63,8 @@ def process_csv(input_file, output_file):
         'B_compactness',
         'C_hue',
         'C_saturation',
-        'C_brightness'
+        'C_brightness',
+        'Hair_mean'
     ]
 
     scaler = StandardScaler()
@@ -68,7 +73,8 @@ def process_csv(input_file, output_file):
     result.to_csv(output_file, index=False)
 
 
-input_csv = Path(__file__).resolve().parent.parent / "data" / "metadata.csv"
-output_csv = input_csv.parent / "features.csv"
+metadata_csv = Path(__file__).resolve().parent.parent / "data" / "metadata.csv"
+annotations_csv = Path(__file__).resolve().parent.parent / "data" / "annotations_combined.csv"
+output_csv = metadata_csv.parent / "features.csv"
 
-process_csv(input_csv, output_csv)
+process_csv(metadata_csv, annotations_csv, output_csv)
