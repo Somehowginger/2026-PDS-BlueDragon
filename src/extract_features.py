@@ -4,8 +4,10 @@ from skimage import io
 import feature_A
 import feature_B
 import feature_C
+import feature_D
 from skimage.transform import resize
 from sklearn.preprocessing import StandardScaler
+import numpy as np
 
 
 def process_csv(metadata_file, annotations_file, output_file):
@@ -34,11 +36,13 @@ def process_csv(metadata_file, annotations_file, output_file):
             mask = io.imread(mask_path)
             img = io.imread(image_path)
             
-            mask = resize(mask, img.shape[:2], order=0, preserve_range=True).astype(bool)
+            mask1 = resize(mask, img.shape[:2], order=0, preserve_range=True).astype(bool)
+            mask2 = resize(mask, img.shape[:2], order=0, preserve_range=True).astype(np.uint8) 
 
-            asymmetry = feature_A.get_asymmetry(mask)
-            compactness = feature_B.get_compactness(mask)
-            hue, saturation, brightness = feature_C.get_hsv_mean(img,mask)
+            asymmetry = feature_A.get_asymmetry(mask1)
+            compactness = feature_B.get_compactness(mask1)
+            hue, saturation, brightness = feature_C.get_hsv_mean(img,mask1)
+            phue, psaturation, pbrightness = feature_D.pigmentation(img,mask2)
 
             diagnosis = row['diagnostic'].strip().upper()
 
@@ -47,7 +51,7 @@ def process_csv(metadata_file, annotations_file, output_file):
 
             hair_mean = pd.Series([row['hair_1'], row['hair_2'], row['hair_3'], row['hair_4'], row['hair_5']]).mean()
 
-            return pd.Series([id_value, img_name, asymmetry, compactness, hue, saturation, brightness, hair_mean, diagnosis, cancer_flag])
+            return pd.Series([id_value, img_name, asymmetry, compactness, hue, saturation, brightness, phue, psaturation, pbrightness, hair_mean, diagnosis, cancer_flag])
 
         except Exception as e:
             print(f"Skipping {row['img_id']} due to error: {e}")
@@ -55,7 +59,7 @@ def process_csv(metadata_file, annotations_file, output_file):
 
     result = df.apply(process_row, axis=1)
     result = result.dropna()
-    result.columns = ['ID', 'Image_ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'Hair_mean', 'Diagnosis', 'Cancer']
+    result.columns = ['ID', 'Image_ID', 'A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness', 'D_hue', 'D_saturation', 'D_brightness','Hair_mean', 'Diagnosis', 'Cancer']
 
 
     feature_cols = [
@@ -64,6 +68,9 @@ def process_csv(metadata_file, annotations_file, output_file):
         'C_hue',
         'C_saturation',
         'C_brightness',
+        'D_hue',
+        'D_saturation',
+        'D_brightness',
         'Hair_mean'
     ]
 
