@@ -8,8 +8,18 @@ from pathlib import Path
 
 
 class KNNSkinCancerClassifier:
-    def __init__(self, n_neighbors=5):
-        self.model = KNeighborsClassifier(n_neighbors=n_neighbors)
+    """KNN classifier for skin cancer detection using features A, B, and C."""
+    
+    def __init__(self, n_neighbors=33, weights='distance', metric='euclidean'):
+        """
+        Initialize KNN classifier.
+        
+        Args:
+            n_neighbors: Number of neighbors to use (default: 33).
+            weights: Weight function - 'uniform' or 'distance' (default: 'distance').
+            metric: Distance metric - 'euclidean', 'manhattan', or 'minkowski' (default: 'euclidean').
+        """
+        self.model = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, metric=metric)
         self.X_train = None
         self.X_test = None
         self.y_train = None
@@ -17,7 +27,15 @@ class KNNSkinCancerClassifier:
         self.test_ids = None
         self.test_img_ids = None
         
-    def load_and_prepare(self, features_path, test_size=0.2, random_state=42):
+    def load_and_prepare(self, features_path, test_size=0.1, random_state=42):
+        """
+        Load features from CSV and split into training/testing sets.
+        
+        Args:
+            features_path: Path to features.csv file.
+            test_size: Proportion of data for testing (default: 0.2).
+            random_state: Random seed for reproducibility (default: 42).
+        """
         df = pd.read_csv(features_path)
         
         # Extract features and target
@@ -39,10 +57,12 @@ class KNNSkinCancerClassifier:
         print(f"Data loaded: {len(self.X_train)} training, {len(self.X_test)} testing samples")
     
     def train(self):
+        """Train the KNN classifier on the training data."""
         self.model.fit(self.X_train, self.y_train)
         print("Model trained")
     
     def evaluate(self):
+        """Evaluate model performance on test set and display metrics."""
         pred = self.model.predict(self.X_test)
         
         print("\n" + "="*50)
@@ -58,18 +78,45 @@ class KNNSkinCancerClassifier:
         print("="*50)
     
     def save_model(self, path):
+        """
+        Save trained model to disk.
+        
+        Args:
+            path: File path to save model (.pkl file).
+        """
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         pickle.dump(self.model, open(path, 'wb'))
         print(f"Model saved to {path}")
     
     def load_model(self, path):
+        """
+        Load trained model from disk.
+        
+        Args:
+            path: File path to load model (.pkl file).
+        """
         self.model = pickle.load(open(path, 'rb'))
         print(f"Model loaded from {path}")
     
     def predict(self, X=None):
+        """
+        Make predictions on test set or provided features.
+        
+        Args:
+            X: Feature array to predict on. If None, uses test set.
+            
+        Returns:
+            Array of predictions (Cancerous or Non-Cancerous).
+        """
         return self.model.predict(X if X is not None else self.X_test)
     
     def save_predictions(self, output_path):
+        """
+        Save predictions to CSV file with probabilities and actual labels.
+        
+        Args:
+            output_path: File path to save predictions CSV.
+        """
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         pred = self.predict()
         proba = self.model.predict_proba(self.X_test)
@@ -88,4 +135,3 @@ class KNNSkinCancerClassifier:
         })
         df.to_csv(output_path, index=False)
         print(f"Predictions saved to {output_path}")
-        
