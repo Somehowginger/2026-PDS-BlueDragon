@@ -7,14 +7,6 @@ def convert_to_HSV(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
 
-def apply_mask(image, mask):
-    """Apply a binary mask to a BGR image and return the masked image."""
-    if len(mask.shape) == 3:
-        mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-    _, mask_bin = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
-    return cv2.bitwise_and(image, image, mask=mask_bin)
-
-
 def get_hsv_mean(image, mask=None):
     hsv = convert_to_HSV(image)
 
@@ -22,12 +14,12 @@ def get_hsv_mean(image, mask=None):
         h_mean = float(np.mean(hsv[:, :, 0]))
         s_mean = float(np.mean(hsv[:, :, 1]))
         v_mean = float(np.mean(hsv[:, :, 2]))
-        return h_mean, s_mean, v_mean
+        return round(h_mean, 3), round(s_mean, 3), round(v_mean, 3)
 
     if len(mask.shape) == 3:
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
     
-    mask_bool = mask.astype(bool)  # просто конвертируем напрямую
+    mask_bool = mask.astype(bool)  # applying mask
 
     h_mean = float(np.mean(hsv[:, :, 0][mask_bool]))
     s_mean = float(np.mean(hsv[:, :, 1][mask_bool]))
