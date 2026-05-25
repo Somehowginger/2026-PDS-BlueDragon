@@ -11,29 +11,17 @@ def crop(mask):
 
 
 def get_asymmetry(mask):
-    mask = mask > 0  # ensure binary
-
     scores = []
 
-    for angle in range(0, 180, 30):
-        rotated = rotate(mask.astype(float), angle, order=0)
-        rotated = rotated > 0.5  # re-binarize
-
-        segment = crop(rotated)
+    for _ in range(6):
+        segment = crop(mask)
         if segment is None or np.sum(segment) == 0:
+            mask = rotate(mask, 30)
             continue
+        scores.append(np.sum(np.logical_xor(segment, np.flip(segment))) / np.sum(segment))
+        mask = rotate(mask, 30)
 
-        # Horizontal symmetry
-        flip_h = np.flip(segment, axis=1)
-        asym_h = np.sum(np.logical_xor(segment, flip_h)) / np.sum(segment)
+    if not scores:
+        return None
 
-        # Vertical symmetry
-        flip_v = np.flip(segment, axis=0)
-        asym_v = np.sum(np.logical_xor(segment, flip_v)) / np.sum(segment)
-
-        scores.append((asym_h + asym_v) / 2)
-
-    if len(scores) == 0:
-        return 0
-
-    return round(np.mean(scores), 3)
+    return round(sum(scores) / len(scores),3)
