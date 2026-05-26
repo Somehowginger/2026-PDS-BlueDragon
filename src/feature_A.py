@@ -11,6 +11,8 @@ def crop(mask):
 
 
 def get_asymmetry(mask):
+    mask = mask > 0  # ensure binary
+
     scores = []
 
     for _ in range(6):

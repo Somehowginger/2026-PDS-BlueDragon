@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report, roc_auc_score
 import pickle
 from pathlib import Path
 
@@ -68,6 +68,15 @@ class KNNSkinCancerClassifier:
     def evaluate(self):
         """Evaluate model performance on test set and display metrics."""
         pred = self.model.predict(self.X_test)
+        proba = self.model.predict_proba(self.X_test)
+        
+        # Get probabilities for Cancerous class
+        cancerous_idx = list(self.model.classes_).index('Cancerous')
+        prob_cancerous = proba[:, cancerous_idx]
+        
+        # Convert labels to binary (Cancerous=1, Benign=0) for AUC calculation
+        y_test_binary = np.array([1 if label == 'Cancerous' else 0 for label in self.y_test])
+        auc = roc_auc_score(y_test_binary, prob_cancerous)
         
         print("\n" + "="*50)
         print("RESULTS")
@@ -76,6 +85,7 @@ class KNNSkinCancerClassifier:
         print(f"Precision: {precision_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
         print(f"Recall:    {recall_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
         print(f"F1-Score:  {f1_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
+        print(f"AUC:       {auc:.4f}")
         print("\nConfusion Matrix:")
         print(confusion_matrix(self.y_test, pred))
         print("\n" + classification_report(self.y_test, pred))
