@@ -65,21 +65,23 @@ class KNNSkinCancerClassifier:
         self.model.fit(self.X_train, self.y_train)
         print("Model trained")
     
-    def evaluate(self):
+    def evaluate(self, threshold=0.45):
         """Evaluate model performance on test set and display metrics."""
-        pred = self.model.predict(self.X_test)
         proba = self.model.predict_proba(self.X_test)
         
         # Get probabilities for Cancerous class
         cancerous_idx = list(self.model.classes_).index('Cancerous')
         prob_cancerous = proba[:, cancerous_idx]
         
+        # Apply threshold
+        pred = np.array(['Cancerous' if p >= threshold else 'Benign' for p in prob_cancerous])
+        
         # Convert labels to binary (Cancerous=1, Benign=0) for AUC calculation
         y_test_binary = np.array([1 if label == 'Cancerous' else 0 for label in self.y_test])
         auc = roc_auc_score(y_test_binary, prob_cancerous)
         
         print("\n" + "="*50)
-        print("RESULTS")
+        print(f"RESULTS (Threshold: {threshold})")
         print("="*50)
         print(f"Accuracy:  {accuracy_score(self.y_test, pred):.4f}")
         print(f"Precision: {precision_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
@@ -111,17 +113,24 @@ class KNNSkinCancerClassifier:
         self.model = pickle.load(open(path, 'rb'))
         print(f"Model loaded from {path}")
     
-    def predict(self, X=None):
+    def predict(self, X=None, threshold=0.45):
         """
         Make predictions on test set or provided features.
         
         Args:
             X: Feature array to predict on. If None, uses test set.
+            threshold: Probability threshold for Cancerous classification (default 0.45).
             
         Returns:
-            Array of predictions (Cancerous or Non-Cancerous).
+            Array of predictions (Cancerous or Benign).
         """
-        return self.model.predict(X if X is not None else self.X_test)
+        X_to_predict = X if X is not None else self.X_test
+        proba = self.model.predict_proba(X_to_predict)
+        cancerous_idx = list(self.model.classes_).index('Cancerous')
+        prob_cancerous = proba[:, cancerous_idx]
+        return np.array(['Cancerous' if p >= threshold else 'Benign' for p in prob_cancerous])
+    
+
     
     def save_predictions(self, output_path):
         """
