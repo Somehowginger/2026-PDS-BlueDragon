@@ -57,13 +57,13 @@ class KNNSkinCancerClassifier:
         self.test_ids = ids[test_idx]
         self.test_img_ids = img_ids[test_idx]
         
-        print(f"Data loaded: {len(self.X_train)} training, {len(self.X_test)} testing samples")
-        print(f"Features used: {self.feature_cols}")
+        #print(f"Data loaded: {len(self.X_train)} training, {len(self.X_test)} testing samples")
+        #print(f"Features used: {self.feature_cols}")
     
     def train(self):
         """Train the KNN classifier on the training data."""
         self.model.fit(self.X_train, self.y_train)
-        print("Model trained")
+        #print("Model trained")
     
     def evaluate(self):
         """Evaluate model performance on test set and display metrics."""
@@ -78,18 +78,18 @@ class KNNSkinCancerClassifier:
         y_test_binary = np.array([1 if label == 'Cancerous' else 0 for label in self.y_test])
         auc = roc_auc_score(y_test_binary, prob_cancerous)
         
-        print("\n" + "="*50)
-        print("RESULTS")
-        print("="*50)
-        print(f"Accuracy:  {accuracy_score(self.y_test, pred):.4f}")
-        print(f"Precision: {precision_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
-        print(f"Recall:    {recall_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
-        print(f"F1-Score:  {f1_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
-        print(f"AUC:       {auc:.4f}")
-        print("\nConfusion Matrix:")
-        print(confusion_matrix(self.y_test, pred))
-        print("\n" + classification_report(self.y_test, pred))
-        print("="*50)
+        # print("\n" + "="*50)
+        # print("RESULTS")
+        # print("="*50)
+        # print(f"Accuracy:  {accuracy_score(self.y_test, pred):.4f}")
+        # print(f"Precision: {precision_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
+        # print(f"Recall:    {recall_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
+        # print(f"F1-Score:  {f1_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
+        # print(f"AUC:       {auc:.4f}")
+        # print("\nConfusion Matrix:")
+        # print(confusion_matrix(self.y_test, pred))
+        # print("\n" + classification_report(self.y_test, pred))
+        # print("="*50)
     
     def save_model(self, path):
         """
@@ -99,7 +99,7 @@ class KNNSkinCancerClassifier:
             path: File path to save model.
         """
         pickle.dump(self.model, open(path, 'wb'))
-        print(f"Model saved to {path}")
+        #print(f"Model saved to {path}")
     
     def load_model(self, path):
         """
@@ -109,7 +109,7 @@ class KNNSkinCancerClassifier:
             path: File path to load model.
         """
         self.model = pickle.load(open(path, 'rb'))
-        print(f"Model loaded from {path}")
+        #print(f"Model loaded from {path}")
     
     def predict(self, X=None):
         """
@@ -146,4 +146,4 @@ class KNNSkinCancerClassifier:
             'Actual': self.y_test
         })
         df.to_csv(output_path, index=False)
-        print(f"Predictions saved to {output_path}")
+        #print(f"Predictions saved to {output_path}")
