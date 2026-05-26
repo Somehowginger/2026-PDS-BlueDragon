@@ -53,6 +53,10 @@ def get_hsv_mean(image, mask=None):
 
 
 def pigmentation(image,mask):
+    """
+    Returns the mean of the colors 
+    after all the steps before
+    """
     image = cv2.cvtColor(image, cv2.COLOR_RGBA2BGR if image.shape[2] == 4 else cv2.COLOR_RGB2BGR)
     img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, _, img_no_hair = removeHair(image, img_gray)
