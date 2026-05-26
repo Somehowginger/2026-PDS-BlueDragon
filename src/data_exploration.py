@@ -24,4 +24,3 @@ if 'diagnostic' in df.columns:
     figure_path = figures_dir / "diagnostic_distribution.png"
     plt.savefig(figure_path, dpi=300, bbox_inches='tight')
     print(f"Saved figure to: {figure_path}")
-    plt.show()

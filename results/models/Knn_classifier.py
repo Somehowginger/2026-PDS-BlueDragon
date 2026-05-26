@@ -8,16 +8,16 @@ from pathlib import Path
 
 
 class KNNSkinCancerClassifier:
-    """KNN classifier for skin cancer detection using features A, B, and C."""
+    """KNN classifier for skin cancer detection using all available features."""
     
     def __init__(self, n_neighbors=33, weights='distance', metric='euclidean'):
         """
         Initialize KNN classifier.
         
         Args:
-            n_neighbors: Number of neighbors to use (default: 33).
-            weights: Weight function - 'uniform' or 'distance' (default: 'distance').
-            metric: Distance metric - 'euclidean', 'manhattan', or 'minkowski' (default: 'euclidean').
+            n_neighbors: Number of neighbors to use.
+            weights: Weight function, we use distance instead of uniform.
+            metric: Distance metric, we use euclidean instead of manhattan or minkowski.
         """
         self.model = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, metric=metric)
         self.X_train = None
@@ -26,21 +26,24 @@ class KNNSkinCancerClassifier:
         self.y_test = None
         self.test_ids = None
         self.test_img_ids = None
+        self.feature_cols = None
         
-    def load_and_prepare(self, features_path, test_size=0.1, random_state=42):
+    def load_and_prepare(self, features_path, test_size=0.2, random_state=42):
         """
         Load features from CSV and split into training/testing sets.
         
         Args:
             features_path: Path to features.csv file.
-            test_size: Proportion of data for testing (default: 0.2).
-            random_state: Random seed for reproducibility (default: 42).
+            test_size: Proportion of data for testing.
+            random_state: Random seed for reproducibility.
         """
         df = pd.read_csv(features_path)
         
-        # Extract features and target
-        feature_cols = ['A_asymmetry', 'B_compactness', 'C_hue', 'C_saturation', 'C_brightness']
-        X = df[feature_cols].values
+        # Automatically detect feature columns (exclude ID, Image_ID, Diagnosis, Cancer)
+        exclude_cols = {'ID', 'Image_ID', 'Diagnosis', 'Cancer'}
+        self.feature_cols = [col for col in df.columns if col not in exclude_cols]
+        
+        X = df[self.feature_cols].values
         y = df['Cancer'].values
         ids = df['ID'].values
         img_ids = df['Image_ID'].values
@@ -55,6 +58,7 @@ class KNNSkinCancerClassifier:
         self.test_img_ids = img_ids[test_idx]
         
         print(f"Data loaded: {len(self.X_train)} training, {len(self.X_test)} testing samples")
+        print(f"Features used: {self.feature_cols}")
     
     def train(self):
         """Train the KNN classifier on the training data."""
@@ -82,9 +86,8 @@ class KNNSkinCancerClassifier:
         Save trained model to disk.
         
         Args:
-            path: File path to save model (.pkl file).
+            path: File path to save model.
         """
-        Path(path).parent.mkdir(parents=True, exist_ok=True)
         pickle.dump(self.model, open(path, 'wb'))
         print(f"Model saved to {path}")
     
@@ -93,7 +96,7 @@ class KNNSkinCancerClassifier:
         Load trained model from disk.
         
         Args:
-            path: File path to load model (.pkl file).
+            path: File path to load model.
         """
         self.model = pickle.load(open(path, 'rb'))
         print(f"Model loaded from {path}")
@@ -117,7 +120,6 @@ class KNNSkinCancerClassifier:
         Args:
             output_path: File path to save predictions CSV.
         """
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         pred = self.predict()
         proba = self.model.predict_proba(self.X_test)
         
