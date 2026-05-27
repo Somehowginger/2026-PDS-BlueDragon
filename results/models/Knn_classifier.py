@@ -10,14 +10,14 @@ from pathlib import Path
 class KNNSkinCancerClassifier:
     """KNN classifier for skin cancer detection using all available features."""
     
-    def __init__(self, n_neighbors=33, weights='distance', metric='euclidean'):
+    def __init__(self, n_neighbors=43, weights='distance', metric='manhattan'):
         """
         Initialize KNN classifier.
         
         Args:
             n_neighbors: Number of neighbors to use.
             weights: Weight function, we use distance instead of uniform.
-            metric: Distance metric, we use euclidean instead of manhattan or minkowski.
+            metric: Distance metric, we use manhattan instead of euclidean or minkowski.
         """
         self.model = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, metric=metric)
         self.X_train = None
@@ -83,11 +83,11 @@ class KNNSkinCancerClassifier:
         # print("\n" + "="*50)
         # print("RESULTS")
         # print("="*50)
-        # print(f"Accuracy:  {accuracy_score(self.y_test, pred):.4f}")
-        # print(f"Precision: {precision_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
-        # print(f"Recall:    {recall_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
-        # print(f"F1-Score:  {f1_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
-        # print(f"AUC:       {auc:.4f}")
+        print(f"Accuracy:  {accuracy_score(self.y_test, pred):.4f}")
+        print(f"Precision: {precision_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
+        print(f"Recall:    {recall_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
+        print(f"F1-Score:  {f1_score(self.y_test, pred, pos_label='Cancerous', zero_division=0):.4f}")
+        print(f"AUC:       {auc:.4f}")
         # print("\nConfusion Matrix:")
         # print(confusion_matrix(self.y_test, pred))
         # print("\n" + classification_report(self.y_test, pred))
