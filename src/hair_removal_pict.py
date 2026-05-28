@@ -9,7 +9,7 @@ def removeHair(img_org, img_gray, kernel_size=5, threshold=10, radius=3):
     img_out = cv2.inpaint(img_org, hair_mask, radius, cv2.INPAINT_TELEA)
     return blackhat, hair_mask, img_out
 
-def pigmentation(image, mask):
+def picture_gen(image, mask):
     image = cv2.cvtColor(image, cv2.COLOR_RGBA2BGR if image.shape[2] == 4 else cv2.COLOR_RGB2BGR)
     img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, _, img_no_hair = removeHair(image, img_gray)
@@ -21,4 +21,4 @@ def pigmentation(image, mask):
 
 imageObj = cv2.imread('../data/imgs/PAT_20_30_44.png')
 maskObj = cv2.imread("../data/masks/PAT_20_30_44_mask.png")
-pigmentation(imageObj, maskObj)
+picture_gen(imageObj, maskObj)
