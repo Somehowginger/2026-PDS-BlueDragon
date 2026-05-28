@@ -16,7 +16,7 @@ def main(features_path, knn_prediction_results_path, decisiontree_prediction_res
     :param decisiontree_model_path: Path to save or load the Decision Tree model (e.g. ./results/models/decisiontree_model.pkl). # ADDED NEW PARAM FOR DECISION TREE
     :param load_model: Boolean to train the model and save it to model_path if False, load it from model_path if True. 
     """
-    knn = KNNSkinCancerClassifier(n_neighbors=33, weights='distance', metric='euclidean')
+    knn = KNNSkinCancerClassifier(n_neighbors=43, weights='distance', metric='manhattan')
     clf = DecisionTree_SkinLeasion_Classifier(max_depth=5)
 
     # load dataset CSV file
