@@ -44,7 +44,7 @@ def plot_confusion_matrix_from_csv(csv_path, model_name, output_path):
 BASE_DIR = Path(__file__).resolve().parents[1]
 
 # Paths to prediction CSV files
-knn_predictions = BASE_DIR / "results" / "predictions" / "knn_predictions.csv"
+knn_predictions = BASE_DIR / "results" / "predictions" / "predictions_knn.csv"
 dt_predictions = BASE_DIR / "results" / "predictions" / "tree_predictions.csv"
 
 # Output folder
