@@ -1,5 +1,6 @@
 import cv2
-import matplotlib as plt
+import matplotlib.pyplot as plt
+from pathlib import Path
 
 def removeHair(img_org, img_gray, kernel_size=5, threshold=10, radius=3):
     """Remove hair from image using blackhat morphology + inpainting."""
@@ -19,6 +20,6 @@ def picture_gen(image, mask):
     plt.axis("off")
     plt.show()
 
-imageObj = cv2.imread('../data/imgs/PAT_20_30_44.png')
-maskObj = cv2.imread("../data/masks/PAT_20_30_44_mask.png")
+imageObj = cv2.imread(Path(__file__).resolve().parent.parent/'data'/'imgs'/'PAT_1396_1360_4.png')
+maskObj = cv2.imread(Path(__file__).resolve().parent.parent/'data'/'imgs'/'PAT_1396_1360_4_mask.png')
 picture_gen(imageObj, maskObj)
