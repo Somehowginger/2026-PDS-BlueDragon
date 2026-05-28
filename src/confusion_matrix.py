@@ -44,14 +44,14 @@ def plot_confusion_matrix_from_csv(csv_path, model_name, output_path):
 BASE_DIR = Path(__file__).resolve().parents[1]
 
 # Paths to prediction CSV files
-knn_predictions = BASE_DIR / "results" / "predictions" / "knn_predictions.csv"
-dt_predictions = BASE_DIR / "results" / "predictions" / "tree_predictions.csv"
+knn_predictions = BASE_DIR / "results" / "predictions" / "predictions_knn.csv"
+dt_predictions = BASE_DIR / "results" / "predictions" / "predictions_decisiontree.csv"
 
 # Output folder
 output_dir = BASE_DIR /"results" /"figures"
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Create confusion matrices
+#Create confusion matrices
 plot_confusion_matrix_from_csv(
     knn_predictions,
     "KNN Classifier",
@@ -61,5 +61,5 @@ plot_confusion_matrix_from_csv(
 plot_confusion_matrix_from_csv(
     dt_predictions,
     "Decision Tree Classifier",
-    output_dir / "decision_tree_confusion_matrix.png"
+    output_dir / "decision_tree_confusion_matrix-3F.png"
 )

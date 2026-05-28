@@ -52,7 +52,7 @@ class DecisionTree_SkinLeasion_Classifier:
 
         df = pd.read_csv(features_path)
 
-        exclude_cols = {'ID', 'Image_ID', 'Diagnosis', 'Cancer'}
+        exclude_cols = {'ID', 'Image_ID', 'Diagnosis', 'Cancer', 'D_hue', 'D_saturation', 'D_brightness', 'Hair_mean'}
         self.feature_cols = [
             col for col in df.columns
             if col not in exclude_cols
@@ -76,15 +76,15 @@ class DecisionTree_SkinLeasion_Classifier:
         self.test_ids = ids[test_idx]
         self.test_img_ids = img_ids[test_idx]
 
-        # print(f"Data loaded: {len(self.X_train)} training, "
-        #       f"{len(self.X_test)} testing samples")
+        print(f"Data loaded: {len(self.X_train)} training, "
+              f"{len(self.X_test)} testing samples")
 
-        # print(f"Features used: {self.feature_cols}")
+        print(f"Features used: {self.feature_cols}")
 
     def train(self):
         """Train Decision Tree classifier."""
         self.model.fit(self.X_train, self.y_train)
-        # print("Model trained")
+        print("Model trained")
 
     def evaluate(self):
         """Evaluate model performance."""
@@ -97,39 +97,39 @@ class DecisionTree_SkinLeasion_Classifier:
         cancerous_idx = list(classes).index('Cancerous')
         prob_cancerous = proba[:, cancerous_idx]
 
-        # print("\n" + "="*50)
-        # print("RESULTS")
-        # print("="*50)
+        print("\n" + "="*50)
+        print("RESULTS")
+        print("="*50)
 
-        # print(f"Accuracy:  "
-        #       f"{accuracy_score(self.y_test, pred):.4f}")
+        print(f"Accuracy:  "
+              f"{accuracy_score(self.y_test, pred):.4f}")
 
-        # print(f"Precision: "
-        #       f"{precision_score(self.y_test,
-        #                          pred,
-        #                          pos_label='Cancerous',
-        #                          zero_division=0):.4f}")
+        print(f"Precision: "
+              f"{precision_score(self.y_test,
+                                 pred,
+                                 pos_label='Cancerous',
+                                 zero_division=0):.4f}")
 
-        # print(f"Recall:    "
-        #       f"{recall_score(self.y_test,
-        #                       pred,
-        #                       pos_label='Cancerous',
-        #                       zero_division=0):.4f}")
+        print(f"Recall:    "
+              f"{recall_score(self.y_test,
+                              pred,
+                              pos_label='Cancerous',
+                              zero_division=0):.4f}")
 
-        # print(f"F1-Score:  "
-        #       f"{f1_score(self.y_test,
-        #                   pred,
-        #                   pos_label='Cancerous',
-        #                   zero_division=0):.4f}")
+        print(f"F1-Score:  "
+              f"{f1_score(self.y_test,
+                          pred,
+                          pos_label='Cancerous',
+                          zero_division=0):.4f}")
 
-        # print(f"ROC AUC:   "
-        #       f"{roc_auc_score(self.y_test, prob_cancerous):.4f}")
+        print(f"ROC AUC:   "
+              f"{roc_auc_score(self.y_test, prob_cancerous):.4f}")
 
-        # print("\nConfusion Matrix:")
-        # print(confusion_matrix(self.y_test, pred))
+        print("\nConfusion Matrix:")
+        print(confusion_matrix(self.y_test, pred))
 
-        # print("\n" + classification_report(self.y_test, pred))
-        # print("="*50)
+        print("\n" + classification_report(self.y_test, pred))
+        print("="*50)
 
     def predict(self, X=None):
         """
