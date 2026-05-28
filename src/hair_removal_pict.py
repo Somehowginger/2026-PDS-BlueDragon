@@ -18,8 +18,10 @@ def picture_gen(image, mask):
     plt.imshow(img_no_hair )
     plt.title("Hair-Removed Image")
     plt.axis("off")
-    plt.show()
+    #plt.show()
 
 imageObj = cv2.imread(Path(__file__).resolve().parent.parent/'data'/'imgs'/'PAT_1396_1360_4.png')
 maskObj = cv2.imread(Path(__file__).resolve().parent.parent/'data'/'imgs'/'PAT_1396_1360_4_mask.png')
 picture_gen(imageObj, maskObj)
+output_path = Path(__file__).resolve().parent.parent / 'results' / 'figures' / "after_hair_removal.png"
+plt.savefig(output_path, dpi=150)
